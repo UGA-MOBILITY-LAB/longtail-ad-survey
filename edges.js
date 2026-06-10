@@ -39,5 +39,13 @@ const EDGES = [
   { from: "kitti", to: "kitti360", rel: "succeeds" },
   { from: "argoverse", to: "argoverse2", rel: "succeeds" },
   { from: "waymo", to: "womd", rel: "extends" },
-  { from: "alvinn", to: "chauffeurnet", rel: "succeeds" }
+  { from: "alvinn", to: "chauffeurnet", rel: "succeeds" },
+  { from: "gaia1", to: "gaia2", rel: "succeeds" },
+  { from: "gaia1", to: "drivingworld", rel: "scales" },
+  { from: "magicdrive", to: "magicdrivev2", rel: "succeeds" },
+  { from: "cosmos", to: "cosmostransfer", rel: "extends" },
+  { from: "cosmos", to: "cosmosdrivedreams", rel: "extends" },
+  { from: "emma", to: "s4driver", rel: "succeeds" },
+  { from: "navsim", to: "navsimv2", rel: "succeeds" },
+  { from: "vnncomp", to: "vnncomp2024", rel: "succeeds" }
 ];
