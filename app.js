@@ -113,6 +113,27 @@
     ADJ[e.to].push({ other: e.from, rel: e.rel, out: false });
   });
 
+  /* ---------- in-corpus citation graph (CITES from cites.js) ----------
+     f cites t. Adjacency precomputed once at load; edges are NEVER drawn
+     en masse, only for the single hovered or pinned paper (focus mode). */
+
+  var CITE_OUT = {};   // key -> array of paper keys it cites
+  var CITE_IN = {};    // key -> array of paper keys citing it
+  (typeof CITES !== "undefined" ? CITES : []).forEach(function (c) {
+    if (c.f === c.t || !paperByKey[c.f] || !paperByKey[c.t]) { return; }
+    if (!CITE_OUT[c.f]) { CITE_OUT[c.f] = []; }
+    if (!CITE_IN[c.t]) { CITE_IN[c.t] = []; }
+    CITE_OUT[c.f].push(c.t);
+    CITE_IN[c.t].push(c.f);
+  });
+
+  function citeCounts(key) {
+    return {
+      out: CITE_OUT[key] ? CITE_OUT[key].length : 0,
+      inn: CITE_IN[key] ? CITE_IN[key].length : 0
+    };
+  }
+
   /* ---------- state ---------- */
 
   var filters = {
@@ -261,6 +282,7 @@
     filters.cat.clear(); filters.year.clear(); filters.vtype.clear(); filters.link.clear();
     hiddenCats.clear(); hiddenTypes.clear();
     showEdges = true;
+    pinnedKey = null;   // release any pinned citation focus
     query = "";
     searchInput.value = "";
     allDropdowns.forEach(function (d) {
@@ -415,12 +437,17 @@
   var renderedPapers = [];
   var renderedMarkers = [];   // marker elements, parallel to renderedPapers
   var edgePathsByKey = {};    // paper key -> incident edge path elements
+  var markerPosByKey = {};    // paper key -> {x, y} for visible markers only
+  var focusLayerEl = null;    // citation focus layer (rebuilt per render)
 
   function renderScatter(papers) {
     while (scatter.firstChild) { scatter.removeChild(scatter.firstChild); }
     renderedPapers = [];
     renderedMarkers = [];
     edgePathsByKey = {};
+    markerPosByKey = {};
+    hiPaths = [];
+    hiMarkers = [];
 
     var i, y, x;
 
@@ -459,16 +486,19 @@
       scatter.appendChild(label);
     });
 
-    // lineage edge layer sits beneath the marker layer so points stay on top
+    // lineage edge layer sits beneath the marker layer so points stay on top;
+    // the citation focus layer sits between them: above lineage, below markers
     var edgeLayer = svgEl("g", { "class": "edge-layer" });
     scatter.appendChild(edgeLayer);
+    focusLayerEl = svgEl("g", { "class": "focus-layer" });
+    scatter.appendChild(focusLayerEl);
     var markerLayer = svgEl("g", { "class": "marker-layer" });
     scatter.appendChild(markerLayer);
 
     // markers
     var laneIndex = {};
     CATEGORIES.forEach(function (c, idx) { laneIndex[c] = idx; });
-    var markerPos = {};   // paper key -> {x, y} for visible markers only
+    var markerPos = markerPosByKey;
     papers.forEach(function (p) {
       if (hiddenCats.has(p.cat) || hiddenTypes.has(p._vtype)) { return; }
       var li = laneIndex[p.cat];
@@ -509,6 +539,17 @@
         edgePathsByKey[e.to].push(path);
       });
     }
+
+    // a pinned citation focus survives re-renders while its paper stays
+    // visible; otherwise the pin is dropped silently
+    if (pinnedKey) {
+      if (markerPosByKey[pinnedKey]) {
+        applyFocus(paperByKey[pinnedKey]);
+      } else {
+        pinnedKey = null;
+      }
+      updateCountLine();
+    }
   }
 
   function showTooltip(p, evt) {
@@ -527,6 +568,9 @@
         "Lineage: " + parts.join("; ") + " (" + adj.length +
         (adj.length === 1 ? " link)" : " links)")));
     }
+    var cc = citeCounts(p.key);
+    tooltip.appendChild(el("div", "tt-cites",
+      "In-corpus: cites " + cc.out + " / cited by " + cc.inn));
     tooltip.hidden = false;
     moveTooltip(evt);
   }
@@ -543,17 +587,55 @@
     tooltip.style.top = top + "px";
   }
 
-  /* ---------- lineage hover highlight ---------- */
+  /* ---------- citation focus mode (hover = transient, click = pinned) ----------
+     The default view never shows citation edges. Hovering a marker overlays
+     that one paper's in-corpus citations in the focus layer (outgoing solid
+     in the category colour, incoming dashed grey) on top of the existing
+     lineage highlight; everything vanishes on pointerleave. Clicking a
+     marker pins the focus; Esc or a click on empty chart background
+     releases it. Opening the paper link moved to double-click. */
 
-  var hiPaths = [];     // edge paths currently highlighted
-  var hiMarkers = [];   // markers with a temporary class applied
+  var hiPaths = [];        // lineage edge paths currently highlighted
+  var hiMarkers = [];      // markers with a temporary class applied
+  var pinnedKey = null;    // key of the click-pinned paper, or null
 
-  function highlightLineage(p) {
-    var incident = edgePathsByKey[p.key];
-    if (!incident || !incident.length) { return; }
+  function drawFocusEdges(p) {
+    var origin = markerPosByKey[p.key];
+    var connected = {};
+    if (!origin || !focusLayerEl) { return connected; }
+    var color = CAT_COLORS[p.cat] || "#5F6A72";
+    (CITE_OUT[p.key] || []).forEach(function (t) {
+      var pos = markerPosByKey[t];
+      if (!pos) { return; }
+      focusLayerEl.appendChild(svgEl("line", {
+        x1: origin.x.toFixed(1), y1: origin.y.toFixed(1),
+        x2: pos.x.toFixed(1), y2: pos.y.toFixed(1),
+        "class": "cite-out", stroke: color
+      }));
+      connected[t] = true;
+    });
+    (CITE_IN[p.key] || []).forEach(function (s) {
+      var pos = markerPosByKey[s];
+      if (!pos) { return; }
+      focusLayerEl.appendChild(svgEl("line", {
+        x1: pos.x.toFixed(1), y1: pos.y.toFixed(1),
+        x2: origin.x.toFixed(1), y2: origin.y.toFixed(1),
+        "class": "cite-in"
+      }));
+      connected[s] = true;
+    });
+    return connected;
+  }
+
+  function applyFocus(p) {
+    clearFocus();
     var color = CAT_COLORS[p.cat] || "#5F6A72";
     var connected = {};
+    var k;
     connected[p.key] = true;
+
+    // existing lineage highlight
+    var incident = edgePathsByKey[p.key] || [];
     incident.forEach(function (path) {
       path.classList.add("edge-hi");
       path.style.stroke = color;
@@ -561,6 +643,14 @@
       connected[path.getAttribute("data-to")] = true;
       hiPaths.push(path);
     });
+
+    // this paper's citation neighbourhood, restricted to visible markers
+    var cited = drawFocusEdges(p);
+    for (k in cited) {
+      if (Object.prototype.hasOwnProperty.call(cited, k)) { connected[k] = true; }
+    }
+
+    if (!incident.length && !focusLayerEl.firstChild) { return; }
     renderedMarkers.forEach(function (m, i) {
       var key = renderedPapers[i].key;
       if (connected[key]) {
@@ -575,7 +665,7 @@
     });
   }
 
-  function clearLineageHighlight() {
+  function clearFocus() {
     hiPaths.forEach(function (path) {
       path.classList.remove("edge-hi");
       path.style.stroke = "";
@@ -586,6 +676,30 @@
     });
     hiPaths = [];
     hiMarkers = [];
+    if (focusLayerEl) {
+      while (focusLayerEl.firstChild) {
+        focusLayerEl.removeChild(focusLayerEl.firstChild);
+      }
+    }
+  }
+
+  function shortTitle(p) {
+    var t = p.title;
+    if (t.length <= 60) { return t; }
+    return t.slice(0, 57).replace(/\s+\S*$/, "") + "…";
+  }
+
+  function pinFocus(p) {
+    pinnedKey = p.key;
+    applyFocus(p);
+    updateCountLine();
+  }
+
+  function unpinFocus() {
+    if (!pinnedKey) { return; }
+    pinnedKey = null;
+    clearFocus();
+    updateCountLine();
   }
 
   scatter.addEventListener("mouseover", function (e) {
@@ -593,8 +707,7 @@
     if (idx !== null && idx !== undefined && idx !== "") {
       var p = renderedPapers[Number(idx)];
       showTooltip(p, e);
-      clearLineageHighlight();
-      highlightLineage(p);
+      if (!pinnedKey) { applyFocus(p); }
     }
   });
   scatter.addEventListener("mousemove", function (e) {
@@ -604,14 +717,25 @@
     var idx = e.target.getAttribute && e.target.getAttribute("data-i");
     if (idx !== null && idx !== undefined && idx !== "") {
       tooltip.hidden = true;
-      clearLineageHighlight();
+      if (!pinnedKey) { clearFocus(); }
     }
   });
   scatter.addEventListener("click", function (e) {
     var idx = e.target.getAttribute && e.target.getAttribute("data-i");
     if (idx !== null && idx !== undefined && idx !== "") {
+      pinFocus(renderedPapers[Number(idx)]);
+    } else if (pinnedKey) {
+      unpinFocus();   // click on empty chart background releases the pin
+    }
+  });
+  scatter.addEventListener("dblclick", function (e) {
+    var idx = e.target.getAttribute && e.target.getAttribute("data-i");
+    if (idx !== null && idx !== undefined && idx !== "") {
       window.open(renderedPapers[Number(idx)]._link, "_blank", "noopener");
     }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { unpinFocus(); }
   });
 
   /* ---------- statistics charts (full dataset, computed once) ---------- */
@@ -786,12 +910,25 @@
   var countBox = document.getElementById("count");
   var currentFiltered = PAPERS;
 
+  // The live-count line doubles as the focus-mode status line (aria-live).
+  function updateCountLine() {
+    if (pinnedKey && paperByKey[pinnedKey]) {
+      var p = paperByKey[pinnedKey];
+      var c = citeCounts(pinnedKey);
+      countBox.textContent = "Focused: " + shortTitle(p) +
+        " - cites " + c.out + " / cited by " + c.inn +
+        " in this corpus (Esc to exit)";
+    } else {
+      countBox.textContent = "Showing " + currentFiltered.length + " of " +
+        SURVEY_META.paperCount + " papers";
+    }
+  }
+
   function render() {
     currentFiltered = PAPERS.filter(passesFilters);
-    countBox.textContent = "Showing " + currentFiltered.length + " of " +
-      SURVEY_META.paperCount + " papers";
     renderScatter(currentFiltered);
     renderTables(currentFiltered);
+    updateCountLine();
   }
 
   /* ---------- citation copy ---------- */
@@ -871,4 +1008,11 @@
   renderYearBars();
   render();
   spy();
+
+  // Deep link: ?focus=<paper key> pins that paper's citation neighbourhood
+  // on load. Unknown or currently hidden keys are ignored; harmless otherwise.
+  var focusParam = /[?&]focus=([A-Za-z0-9_]+)/.exec(window.location.search);
+  if (focusParam && paperByKey[focusParam[1]] && markerPosByKey[focusParam[1]]) {
+    pinFocus(paperByKey[focusParam[1]]);
+  }
 })();
