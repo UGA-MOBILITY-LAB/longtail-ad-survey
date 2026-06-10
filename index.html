@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From Generation to Guarantee &mdash; Survey Companion</title>
+<meta name="description" content="Companion website for the survey 'From Generation to Guarantee: A Survey on World Models, Vision-Language-Action Models, and Safety Verification for Long-Tail Autonomous Driving'.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="wordmark" href="#overview"><span class="glyph" aria-hidden="true"></span>UGA Mobility Lab</a>
+    <nav aria-label="Page sections">
+      <ul class="nav-pills">
+        <li><a class="pill" href="#overview">Overview</a></li>
+        <li><a class="pill" href="#pipeline">Pipeline</a></li>
+        <li><a class="pill" href="#statistics">Statistics</a></li>
+        <li><a class="pill" href="#explorer">Explorer</a></li>
+        <li><a class="pill" href="#papers">Papers</a></li>
+        <li><a class="pill" href="#cite">Cite</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section id="overview" class="section">
+    <div class="container">
+      <p class="kicker">Survey companion site</p>
+      <h1>From Generation to Guarantee</h1>
+      <p class="subtitle">A Survey on World Models, Vision-Language-Action Models, and Safety Verification for Long-Tail Autonomous Driving</p>
+      <p class="authors">Haohua Que, Qianyi Wu, Handong Yao &middot; College of Engineering, University of Georgia</p>
+      <div class="stat-chips" aria-label="Survey statistics">
+        <span class="stat-chip"><strong id="stat-count">302</strong> papers</span>
+        <span class="stat-chip"><strong id="stat-cats">7</strong> research areas</span>
+        <span class="stat-chip"><strong id="stat-years">1989&ndash;2025</strong> coverage</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cite" class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Citation</h2>
+      </div>
+      <div class="card cite-card">
+        <p>For use in publications and presentations please cite this survey as follows:</p>
+        <blockquote id="cite-text">Que, H., Wu, Q., Yao, H. &ldquo;From Generation to Guarantee: A Survey on World Models, Vision-Language-Action Models, and Safety Verification for Long-Tail Autonomous Driving.&rdquo; Manuscript under review, 2026.</blockquote>
+        <button type="button" id="copy-cite" class="btn-primary">Copy citation</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pipeline" class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>The Survey Axis</h2>
+      </div>
+      <p class="section-lede">The survey reads three research families as one coordinated response to the open-world long-tail challenge: world models <em>generate</em> the tail, vision-language-action models <em>understand</em> it, and safety verification <em>guarantees</em> behaviour on it.</p>
+      <div class="card pipeline-card">
+        <div class="pipeline-scroll">
+          <svg class="pipeline" viewBox="0 0 1000 168" width="1000" height="168" role="img" aria-label="Pipeline diagram: Long-Tail Problem leads to Generation with World Models, then Understanding with VLA models, then Guarantee with Safety Verification, with a dashed closed-loop arrow returning to the Long-Tail Problem.">
+            <defs>
+              <marker id="arrow-fwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#000000"></path>
+              </marker>
+              <marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#5F6A72"></path>
+              </marker>
+            </defs>
+            <rect x="8" y="22" width="196" height="52" rx="10" fill="#E08A3C"></rect>
+            <text x="106" y="43" class="chip-kicker">OPEN WORLD</text>
+            <text x="106" y="61" class="chip-main">Long-Tail Problem</text>
+            <line x1="212" y1="48" x2="262" y2="48" stroke="#000000" stroke-width="2" marker-end="url(#arrow-fwd)"></line>
+            <rect x="272" y="22" width="212" height="52" rx="10" fill="#BA0C2F"></rect>
+            <text x="378" y="43" class="chip-kicker">GENERATION</text>
+            <text x="378" y="61" class="chip-main">World Models</text>
+            <line x1="492" y1="48" x2="542" y2="48" stroke="#000000" stroke-width="2" marker-end="url(#arrow-fwd)"></line>
+            <rect x="552" y="22" width="180" height="52" rx="10" fill="#1F4E94"></rect>
+            <text x="642" y="43" class="chip-kicker">UNDERSTANDING</text>
+            <text x="642" y="61" class="chip-main">VLA Models</text>
+            <line x1="740" y1="48" x2="790" y2="48" stroke="#000000" stroke-width="2" marker-end="url(#arrow-fwd)"></line>
+            <rect x="800" y="22" width="192" height="52" rx="10" fill="#00A3AD"></rect>
+            <text x="896" y="43" class="chip-kicker">GUARANTEE</text>
+            <text x="896" y="61" class="chip-main">Safety Verification</text>
+            <path d="M 896 74 L 896 128 L 106 128 L 106 84" fill="none" stroke="#5F6A72" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arrow-loop)"></path>
+            <text x="501" y="121" class="loop-label">closed loop</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="statistics" class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Statistics</h2>
+        <span class="date-pill" id="stats-range">1989~2025</span>
+      </div>
+      <div class="stats-grid">
+        <div class="card">
+          <h3>Papers per research area</h3>
+          <svg id="cat-bars" role="img" aria-label="Horizontal bar chart of paper counts per research area"></svg>
+        </div>
+        <div class="card">
+          <h3>Papers per year</h3>
+          <svg id="year-bars" role="img" aria-label="Vertical bar chart of paper counts per publication year"></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="explorer" class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Paper Explorer</h2>
+        <span class="date-pill" id="explorer-range">1989~2025</span>
+      </div>
+      <div class="card toolbar" id="toolbar">
+        <div class="dd-row" id="dd-row">
+          <!-- dropdowns injected by app.js -->
+          <button type="button" id="reset-btn" class="reset-btn">Reset</button>
+        </div>
+        <div class="search-row">
+          <input type="search" id="search" placeholder="Search title, author, or venue&hellip;" aria-label="Search papers by title, author, or venue">
+          <span class="count" id="count" role="status" aria-live="polite">Showing 302 of 302 papers</span>
+        </div>
+      </div>
+      <div class="card chart-card">
+        <div class="legend" id="legend"></div>
+        <div class="chart-wrap">
+          <div class="chart-scroll">
+            <svg id="scatter" role="img" aria-label="Scatter chart of all papers, positioned by publication year and research area"></svg>
+          </div>
+          <div class="tooltip" id="tooltip" hidden></div>
+        </div>
+        <p class="chart-note"><em>Hover a point for details; click to open the paper. Markers: shape = venue type, colour = research area.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="papers" class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Paper List</h2>
+        <span class="date-pill" id="papers-range">1989~2025</span>
+      </div>
+      <p class="section-lede">All references from the survey bibliography, grouped by research area. Lists respect the filters and search above.</p>
+      <div id="paper-groups"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>College of Engineering, University of Georgia</p>
+    <p class="footer-muted">Data extracted from the survey bibliography.</p>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
