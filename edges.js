@@ -1,0 +1,43 @@
+/* From Generation to Guarantee - curated lineage edges.
+   Kept in a separate file so regenerations of data.js never clobber them.
+   Each edge references PAPERS keys from data.js. Loaded after data.js,
+   before app.js. */
+
+const EDGES = [
+  { from: "planet", to: "dreamerv2", rel: "succeeds" },
+  { from: "dreamerv2", to: "dreamerv3", rel: "succeeds" },
+  { from: "worldmodels", to: "mile", rel: "succeeds" },
+  { from: "ddpm", to: "ldm", rel: "refines" },
+  { from: "ldm", to: "svd", rel: "extends" },
+  { from: "ldm", to: "videoldm", rel: "extends" },
+  { from: "maskgit", to: "magvit", rel: "extends" },
+  { from: "drivedreamer", to: "vista", rel: "extends" },
+  { from: "vista", to: "genad", rel: "scales" },
+  { from: "gaia1", to: "adriveri", rel: "scales" },
+  { from: "gaia1", to: "worlddreamer", rel: "scales" },
+  { from: "drivedreamer", to: "drivedreamer2", rel: "extends" },
+  { from: "drivedreamer", to: "drivedreamer4d", rel: "extends" },
+  { from: "magicdrive", to: "magicdrive3d", rel: "extends" },
+  { from: "occworld", to: "occsora", rel: "extends" },
+  { from: "emma", to: "openemma", rel: "reproduces" },
+  { from: "blip", to: "blip2", rel: "succeeds" },
+  { from: "gpt3", to: "gpt4", rel: "succeeds" },
+  { from: "rt1", to: "rt2", rel: "succeeds" },
+  { from: "ctg", to: "ctgpp", rel: "succeeds" },
+  { from: "msp", to: "odin", rel: "refines" },
+  { from: "odin", to: "godin", rel: "extends" },
+  { from: "mixup", to: "cutmix", rel: "extends" },
+  { from: "pointnet", to: "pointnetpp", rel: "succeeds" },
+  { from: "fastlin", to: "crown", rel: "succeeds" },
+  { from: "deepz", to: "crown", rel: "succeeds" },
+  { from: "crown", to: "betacrown", rel: "extends" },
+  { from: "betacrown", to: "gcpcrown", rel: "refines" },
+  { from: "staliro", to: "ast", rel: "extends" },
+  { from: "staliro", to: "verifai", rel: "extends" },
+  { from: "breach", to: "ast", rel: "extends" },
+  { from: "breach", to: "verifai", rel: "extends" },
+  { from: "kitti", to: "kitti360", rel: "succeeds" },
+  { from: "argoverse", to: "argoverse2", rel: "succeeds" },
+  { from: "waymo", to: "womd", rel: "extends" },
+  { from: "alvinn", to: "chauffeurnet", rel: "succeeds" }
+];

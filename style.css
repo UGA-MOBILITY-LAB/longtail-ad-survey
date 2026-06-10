@@ -250,6 +250,18 @@ h1 { font-size: 42px; line-height: 1.12; margin: 0 0 10px; }
 #scatter .marker { cursor: pointer; stroke: #FFFFFF; stroke-width: 1; }
 #scatter .marker:hover { stroke: var(--black); }
 
+/* lineage edge layer: subtle by default, the dots stay dominant */
+#scatter .edge {
+  fill: none; stroke: #C9CED4; stroke-width: 1; opacity: 0.55;
+  pointer-events: none;
+}
+#scatter .edge.edge-hi { stroke-width: 2; opacity: 0.9; }
+#scatter .marker.marker-dim { opacity: 0.25; }
+#scatter .marker.marker-connected {
+  stroke: #1A1A1A; stroke-width: 2;
+  transform-box: fill-box; transform-origin: center; transform: scale(1.2);
+}
+
 .tooltip {
   position: absolute; z-index: 45; pointer-events: none;
   max-width: 330px; background: #FFFFFF;
@@ -259,6 +271,10 @@ h1 { font-size: 42px; line-height: 1.12; margin: 0 0 10px; }
 }
 .tooltip .tt-title { font-weight: 700; color: var(--black); margin-bottom: 3px; }
 .tooltip .tt-meta { color: var(--muted); }
+.tooltip .tt-lineage {
+  margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--line);
+  color: #5F6A72; font-size: 12px;
+}
 
 .chart-note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
 

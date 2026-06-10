@@ -95,6 +95,24 @@
     if (Object.prototype.hasOwnProperty.call(catTotals, p.cat)) { catTotals[p.cat]++; }
   });
 
+  /* ---------- lineage edges (EDGES from edges.js) ---------- */
+
+  var paperByKey = {};
+  PAPERS.forEach(function (p) { paperByKey[p.key] = p; });
+
+  // Edges whose both endpoints exist in the dataset, plus an adjacency map
+  // (paper key -> incident links), precomputed once at load.
+  var LINEAGE_EDGES = (typeof EDGES !== "undefined" ? EDGES : []).filter(function (e) {
+    return paperByKey[e.from] && paperByKey[e.to];
+  });
+  var ADJ = {};
+  LINEAGE_EDGES.forEach(function (e) {
+    if (!ADJ[e.from]) { ADJ[e.from] = []; }
+    if (!ADJ[e.to]) { ADJ[e.to] = []; }
+    ADJ[e.from].push({ other: e.to, rel: e.rel, out: true });
+    ADJ[e.to].push({ other: e.from, rel: e.rel, out: false });
+  });
+
   /* ---------- state ---------- */
 
   var filters = {
@@ -106,6 +124,7 @@
   var query = "";
   var hiddenCats = new Set();   // legend toggles, chart only
   var hiddenTypes = new Set();
+  var showEdges = true;         // lineage-link layer toggle
 
   function passesFilters(p) {
     if (filters.cat.size && !filters.cat.has(p.cat)) { return false; }
@@ -241,6 +260,7 @@
   resetBtn.addEventListener("click", function () {
     filters.cat.clear(); filters.year.clear(); filters.vtype.clear(); filters.link.clear();
     hiddenCats.clear(); hiddenTypes.clear();
+    showEdges = true;
     query = "";
     searchInput.value = "";
     allDropdowns.forEach(function (d) {
@@ -319,6 +339,27 @@
       typeGroup.appendChild(b);
     });
     legendBox.appendChild(typeGroup);
+
+    var edgeGroupBox = el("div", "legend-group");
+    edgeGroupBox.appendChild(el("span", "legend-group-title", "Lineage"));
+    var eb = el("button", "legend-item");
+    eb.type = "button";
+    eb.setAttribute("aria-pressed", "true");
+    var glyph = svgEl("svg", { width: 18, height: 13, "aria-hidden": "true" });
+    glyph.appendChild(svgEl("path", {
+      d: "M 2 11 Q 9 1 16 11", fill: "none",
+      stroke: "#9AA3AB", "stroke-width": 1.5
+    }));
+    eb.appendChild(glyph);
+    eb.appendChild(document.createTextNode("Lineage links "));
+    eb.appendChild(el("span", "legend-count", String(LINEAGE_EDGES.length)));
+    eb.addEventListener("click", function () {
+      showEdges = !showEdges;
+      eb.setAttribute("aria-pressed", showEdges ? "true" : "false");
+      renderScatter(currentFiltered);
+    });
+    edgeGroupBox.appendChild(eb);
+    legendBox.appendChild(edgeGroupBox);
   }
 
   /* ---------- scatter chart ---------- */
@@ -372,10 +413,14 @@
   }
 
   var renderedPapers = [];
+  var renderedMarkers = [];   // marker elements, parallel to renderedPapers
+  var edgePathsByKey = {};    // paper key -> incident edge path elements
 
   function renderScatter(papers) {
     while (scatter.firstChild) { scatter.removeChild(scatter.firstChild); }
     renderedPapers = [];
+    renderedMarkers = [];
+    edgePathsByKey = {};
 
     var i, y, x;
 
@@ -414,9 +459,16 @@
       scatter.appendChild(label);
     });
 
+    // lineage edge layer sits beneath the marker layer so points stay on top
+    var edgeLayer = svgEl("g", { "class": "edge-layer" });
+    scatter.appendChild(edgeLayer);
+    var markerLayer = svgEl("g", { "class": "marker-layer" });
+    scatter.appendChild(markerLayer);
+
     // markers
     var laneIndex = {};
     CATEGORIES.forEach(function (c, idx) { laneIndex[c] = idx; });
+    var markerPos = {};   // paper key -> {x, y} for visible markers only
     papers.forEach(function (p) {
       if (hiddenCats.has(p.cat) || hiddenTypes.has(p._vtype)) { return; }
       var li = laneIndex[p.cat];
@@ -428,8 +480,35 @@
       var m = markerEl(p, mx, my);
       m.setAttribute("data-i", String(renderedPapers.length));
       renderedPapers.push(p);
-      scatter.appendChild(m);
+      renderedMarkers.push(m);
+      markerPos[p.key] = { x: mx, y: my };
+      markerLayer.appendChild(m);
     });
+
+    // lineage edges: drawn only when both endpoints are currently visible
+    if (showEdges) {
+      LINEAGE_EDGES.forEach(function (e) {
+        var a = markerPos[e.from];
+        var b = markerPos[e.to];
+        if (!a || !b) { return; }
+        var midX = (a.x + b.x) / 2;
+        var span = Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
+        var lift = Math.min(38, 10 + span * 0.14);
+        var ctrlY = Math.min(a.y, b.y) - lift;   // gentle upward bow
+        var d = "M " + a.x.toFixed(1) + " " + a.y.toFixed(1) +
+                " Q " + midX.toFixed(1) + " " + ctrlY.toFixed(1) +
+                " " + b.x.toFixed(1) + " " + b.y.toFixed(1);
+        var path = svgEl("path", {
+          d: d, "class": "edge",
+          "data-from": e.from, "data-to": e.to
+        });
+        edgeLayer.appendChild(path);
+        if (!edgePathsByKey[e.from]) { edgePathsByKey[e.from] = []; }
+        if (!edgePathsByKey[e.to]) { edgePathsByKey[e.to] = []; }
+        edgePathsByKey[e.from].push(path);
+        edgePathsByKey[e.to].push(path);
+      });
+    }
   }
 
   function showTooltip(p, evt) {
@@ -439,6 +518,15 @@
     var venueLine = (p.venue ? p.venue + ", " : "") + p.year +
       " · " + p._vtype;
     tooltip.appendChild(el("div", "tt-meta", venueLine));
+    var adj = ADJ[p.key];
+    if (adj && adj.length) {
+      var parts = adj.map(function (a) {
+        return a.rel + (a.out ? " → " : " ← ") + a.other;
+      });
+      tooltip.appendChild(el("div", "tt-lineage",
+        "Lineage: " + parts.join("; ") + " (" + adj.length +
+        (adj.length === 1 ? " link)" : " links)")));
+    }
     tooltip.hidden = false;
     moveTooltip(evt);
   }
@@ -455,10 +543,58 @@
     tooltip.style.top = top + "px";
   }
 
+  /* ---------- lineage hover highlight ---------- */
+
+  var hiPaths = [];     // edge paths currently highlighted
+  var hiMarkers = [];   // markers with a temporary class applied
+
+  function highlightLineage(p) {
+    var incident = edgePathsByKey[p.key];
+    if (!incident || !incident.length) { return; }
+    var color = CAT_COLORS[p.cat] || "#5F6A72";
+    var connected = {};
+    connected[p.key] = true;
+    incident.forEach(function (path) {
+      path.classList.add("edge-hi");
+      path.style.stroke = color;
+      connected[path.getAttribute("data-from")] = true;
+      connected[path.getAttribute("data-to")] = true;
+      hiPaths.push(path);
+    });
+    renderedMarkers.forEach(function (m, i) {
+      var key = renderedPapers[i].key;
+      if (connected[key]) {
+        if (key !== p.key) {
+          m.classList.add("marker-connected");
+          hiMarkers.push(m);
+        }
+      } else {
+        m.classList.add("marker-dim");
+        hiMarkers.push(m);
+      }
+    });
+  }
+
+  function clearLineageHighlight() {
+    hiPaths.forEach(function (path) {
+      path.classList.remove("edge-hi");
+      path.style.stroke = "";
+    });
+    hiMarkers.forEach(function (m) {
+      m.classList.remove("marker-connected");
+      m.classList.remove("marker-dim");
+    });
+    hiPaths = [];
+    hiMarkers = [];
+  }
+
   scatter.addEventListener("mouseover", function (e) {
     var idx = e.target.getAttribute && e.target.getAttribute("data-i");
     if (idx !== null && idx !== undefined && idx !== "") {
-      showTooltip(renderedPapers[Number(idx)], e);
+      var p = renderedPapers[Number(idx)];
+      showTooltip(p, e);
+      clearLineageHighlight();
+      highlightLineage(p);
     }
   });
   scatter.addEventListener("mousemove", function (e) {
@@ -466,7 +602,10 @@
   });
   scatter.addEventListener("mouseout", function (e) {
     var idx = e.target.getAttribute && e.target.getAttribute("data-i");
-    if (idx !== null && idx !== undefined && idx !== "") { tooltip.hidden = true; }
+    if (idx !== null && idx !== undefined && idx !== "") {
+      tooltip.hidden = true;
+      clearLineageHighlight();
+    }
   });
   scatter.addEventListener("click", function (e) {
     var idx = e.target.getAttribute && e.target.getAttribute("data-i");
