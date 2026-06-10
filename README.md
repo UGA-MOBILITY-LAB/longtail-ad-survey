@@ -2,7 +2,7 @@
 
 Interactive literature hub for the survey **"From Generation to Guarantee: A Survey on World Models, Vision-Language-Action Models, and Safety Verification for Long-Tail Autonomous Driving"** (Haohua Que, Qianyi Wu, Handong Yao — College of Engineering, University of Georgia; manuscript under review, 2026).
 
-**Live site:** https://uga-mobility-lab.github.io/from-generation-to-guarantee/
+**Live site:** https://uga-mobility-lab.github.io/longtail-ad-survey/
 
 ## What's here
 
