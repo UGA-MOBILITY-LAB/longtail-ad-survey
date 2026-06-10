@@ -3,7 +3,7 @@ const SURVEY_META = {
   subtitle: "A Survey on World Models, Vision-Language-Action Models, and Safety Verification for Long-Tail Autonomous Driving",
   authors: "Haohua Que, Qianyi Wu, Handong Yao",
   affiliation: "College of Engineering, University of Georgia",
-  paperCount: 339,
+  paperCount: 361,
   yearMin: 1989,
   yearMax: 2026
 };
@@ -347,5 +347,27 @@ const PAPERS = [
   { key: "lang2ltl", title: "Grounding Complex Natural Language Commands for Temporal Tasks in Unseen Environments", authors: "J. X. Liu, Z. Yang, I. Idrees, S. Liang, B. Schornstein, S. Tellex, A. Shah", venue: "Conference on Robot Learning (CoRL)", year: 2023, cat: "Safety Verification", arxiv: null },
   { key: "drivefuzz", title: "DriveFuzz: Discovering Autonomous Driving Bugs through Driving Quality-Guided Fuzzing", authors: "S. Kim, M. Liu, J. Rhee, Y. Jeon, Y. Kwon, C. H. Kim", venue: "ACM SIGSAC Conference on Computer and Communications Security (CCS)", year: 2022, cat: "Safety Verification", arxiv: null },
   { key: "avfuzzer", title: "AV-FUZZER: Finding Safety Violations in Autonomous Driving Systems", authors: "G. Li, Y. Li, S. Jha, T. Tsai, M. Sullivan, S. K. S. Hari, Z. Kalbarczyk, R. K. Iyer", venue: "IEEE International Symposium on Software Reliability Engineering (ISSRE)", year: 2020, cat: "Safety Verification", arxiv: null },
-  { key: "openscenario", title: "ASAM OpenSCENARIO V1.2.0: Dynamic Content in Driving Simulation", authors: "ASAM e.V.", venue: "", year: 2022, cat: "Benchmarks & Metrics", arxiv: null }
+  { key: "openscenario", title: "ASAM OpenSCENARIO V1.2.0: Dynamic Content in Driving Simulation", authors: "ASAM e.V.", venue: "", year: 2022, cat: "Benchmarks & Metrics", arxiv: null },
+  { key: "drivinggen", title: "DrivingGen: A Comprehensive Benchmark for Generative Video World Models in Autonomous Driving", authors: "Zhou et al.", venue: "International Conference on Learning Representations (ICLR)", year: 2026, cat: "World Models", arxiv: null },
+  { key: "resworld", title: "ResWorld: Temporal Residual World Model for End-to-End Autonomous Driving", authors: "J. Zhang, Z. Fu, Z. Xu, W. Dai, Q. Liu", venue: "International Conference on Learning Representations (ICLR)", year: 2026, cat: "World Models", arxiv: null },
+  { key: "hermespp", title: "HERMES++: Toward a Unified Driving World Model for 3D Scene Understanding and Generation", authors: "Zhou et al.", venue: "arXiv preprint", year: 2026, cat: "World Models", arxiv: "2604.28196" },
+  { key: "eponav2", title: "EponaV2: Driving World Model with Comprehensive Future Reasoning", authors: "Xu et al.", venue: "arXiv preprint", year: 2026, cat: "World Models", arxiv: "2605.14696" },
+  { key: "drivefuture", title: "DriveFuture: Future-Aware Latent World Models for Autonomous Driving", authors: "Hong et al.", venue: "arXiv preprint", year: 2026, cat: "World Models", arxiv: "2605.09701" },
+  { key: "composia", title: "Composing Driving Worlds through Disentangled Control for Adversarial Scenario Generation", authors: "Zhan et al.", venue: "arXiv preprint", year: 2026, cat: "World Models", arxiv: "2603.12864" },
+  { key: "opendrivevla", title: "OpenDriveVLA: Towards End-to-end Autonomous Driving with Large Vision Language Action Model", authors: "X. Zhou, X. Han, F. Yang, Y. Ma, V. Tresp, A. Knoll", venue: "AAAI Conference on Artificial Intelligence (AAAI)", year: 2026, cat: "VLA", arxiv: null },
+  { key: "safedrive", title: "SafeDrive: Fine-Grained Safety Reasoning for End-to-End Driving in a Sparse World", authors: "J. Kim, J. Oh, S. Yu, H. Shin, D. Kwak, J. W. Choi", venue: "IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)", year: 2026, cat: "VLA", arxiv: null },
+  { key: "steervla", title: "SteerVLA: Steering Vision-Language-Action Models in Long-Tail Driving Scenarios", authors: "Gao et al.", venue: "arXiv preprint", year: 2026, cat: "VLA", arxiv: "2602.08440" },
+  { key: "driveworldvla", title: "DriveWorld-VLA: Unified Latent-Space World Modeling with Vision-Language-Action for Autonomous Driving", authors: "F. Jia, L. Liu, Z. Song, C. Jia, H. Ye, X. Hao, L. Chen", venue: "arXiv preprint", year: 2026, cat: "VLA", arxiv: "2602.06521" },
+  { key: "curiousvla", title: "Devil is in Narrow Policy: Unleashing Exploration in Driving VLA Models", authors: "Chen et al.", venue: "arXiv preprint", year: 2026, cat: "VLA", arxiv: "2603.06049" },
+  { key: "vlaworld", title: "Learning Vision-Language-Action World Models for Autonomous Driving", authors: "G. Wang, P. Tang, X. Ren, G. Zhao, B. Feng, C. Ma", venue: "arXiv preprint", year: 2026, cat: "VLA", arxiv: "2604.09059" },
+  { key: "hidrive", title: "HiDrive: A Closed-Loop Benchmark for High-Level Autonomous Driving", authors: "Z. Xia, G. Zhu, G. Tang, W. Chen, Y. Wang", venue: "arXiv preprint", year: 2026, cat: "Benchmarks & Metrics", arxiv: "2605.09972" },
+  { key: "safer", title: "SaFeR: Safety-Critical Scenario Generation for Autonomous Driving Test via Feasibility-Constrained Token Resampling", authors: "J. Cui, F. Liang, G. Yang, C. Tang, J. Cui", venue: "arXiv preprint", year: 2026, cat: "Safety Verification", arxiv: "2603.04071" },
+  { key: "counterscene", title: "CounterScene: Counterfactual Causal Reasoning in Generative World Models for Safety-Critical Closed-Loop Evaluation", authors: "B. Jing, R. Hao, W. Zhou, H. Yu", venue: "arXiv preprint", year: 2026, cat: "Safety Verification", arxiv: "2603.21104" },
+  { key: "sail", title: "SAIL: Scene-aware Adaptive Iterative Learning for Long-Tail Trajectory Prediction in Autonomous Vehicles", authors: "B. Rao, H. Liao, C. Wang, K. Li, Z. Li, H. Yang", venue: "arXiv preprint", year: 2026, cat: "Long-Tail", arxiv: "2604.04573" },
+  { key: "drivingtwin", title: "DrivIng: A Large-Scale Multimodal Driving Dataset with Full Digital Twin Integration", authors: "D. Rossle, X. Xie, A. Mohan, V. Thirugnana Sambandham, D. Cremers, T. Schon", venue: "arXiv preprint", year: 2026, cat: "Benchmarks & Metrics", arxiv: "2601.15260" },
+  { key: "dualshield", title: "DualShield: Safe Model Predictive Diffusion via Reachability Analysis for Interactive Autonomous Driving", authors: "R. Yang, L. Zheng, R. Yao, J. Ma", venue: "arXiv preprint", year: 2026, cat: "Safety Verification", arxiv: "2601.15729" },
+  { key: "safeplanner", title: "SafePlanner: Testing Safety of the Automated Driving System Plan Model", authors: "D. Kim, S. Han, S. Woo, J. Jang, J. Kim, C. Song, Y. Kim", venue: "arXiv preprint", year: 2026, cat: "Safety Verification", arxiv: "2601.09171" },
+  { key: "semanticobserver", title: "A Semantic Observer Layer for Autonomous Vehicles: Pre-Deployment Feasibility Study of VLMs for Low-Latency Anomaly Detection", authors: "K. Runwal, S. Gajare, D. Adejumo, O. Ankalkope, S. Baroth, A. Arab", venue: "arXiv preprint", year: 2026, cat: "Safety Verification", arxiv: "2603.28888" },
+  { key: "favaro2026case", title: "Building a Credible Case for Safety: Approach Proposal for Automated Driving Systems", authors: "F. M. Favaro, L. Fraade-Blanar, S. Schnelle, T. Victor, M. Pena, J. Engstrom, J. Scanlon, K. Kusano, D. Smith", venue: "Journal of Safety Research", year: 2026, cat: "Safety Verification", arxiv: null },
+  { key: "reasonstl", title: "ReasonSTL: Bridging Natural Language and Signal Temporal Logic via Tool-Augmented Process-Rewarded Learning", authors: "B. Ye, Z. Li, J. Huang, J. Ma, X. Yin", venue: "arXiv preprint", year: 2026, cat: "Safety Verification", arxiv: "2605.06483" }
 ];

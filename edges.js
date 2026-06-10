@@ -47,5 +47,6 @@ const EDGES = [
   { from: "cosmos", to: "cosmosdrivedreams", rel: "extends" },
   { from: "emma", to: "s4driver", rel: "succeeds" },
   { from: "navsim", to: "navsimv2", rel: "succeeds" },
-  { from: "vnncomp", to: "vnncomp2024", rel: "succeeds" }
+  { from: "vnncomp", to: "vnncomp2024", rel: "succeeds" },
+  { from: "emma", to: "opendrivevla", rel: "extends" }
 ];
